@@ -1,6 +1,10 @@
 from fastai.vision.all import *
 from fastai.vision.widgets import *
 from fastcore.all import *
+import pathlib
+
+temp = pathlib.PosixPath
+pathlib.PosixPath = pathlib.WindowsPath #TODO: replace for linux
 
 
 class FlowerClassifier:
@@ -14,5 +18,5 @@ class FlowerClassifier:
         return res
 
 
-classifier = FlowerClassifier('./../../resource/export.pkl')
-print(classifier.predict('D:\\projectsHome\\flow-bot\\resource\\files\\IMG-20191209-WA0001.jpg'))
+classifier = FlowerClassifier('.\\..\\..\\resource/export.pkl')
+print(classifier.predict('D:\\projectsHome\\flow-telegram-bot\\resource\\files\\IMG-20191209-WA0001.jpg'))
