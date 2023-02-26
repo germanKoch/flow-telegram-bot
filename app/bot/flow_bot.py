@@ -26,7 +26,7 @@ def cmd_start(message):
                      f"Привет! Иди в Жопу!")
 
 
-@bot.message_handler(content_types=['photo'])
+@bot.message_handler(content_types=['file', 'photo'])
 def photo(message):
     file_id = message.photo[-1].file_id
     file_info = bot.get_file(file_id)
