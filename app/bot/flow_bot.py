@@ -1,13 +1,18 @@
 import logging
-from typing import List
+import uuid
 
 import telebot
-import telebot.types as types
 
 import app.config as config
+import pathlib
+
+from app.until.loader import load_img, remove_img
+
+from app.ml.flower_classifier import FlowerClassifier
 
 bot = telebot.TeleBot(config.TOKEN)
 log = logging.getLogger(__name__)
+flow_classifier = FlowerClassifier()
 
 
 def start():
@@ -21,10 +26,23 @@ def cmd_start(message):
                      f"Привет! Иди в Жопу!")
 
 
+@bot.message_handler(content_types=['photo'])
+def photo(message):
+    file_id = message.photo[-1].file_id
+    file_info = bot.get_file(file_id)
+
+    filename = pathlib.Path(file_info.file_path).name
+
+    local_filename = f"{uuid.uuid1()}_{filename}"
+    downloaded_file = bot.download_file(file_info.file_path)
+
+    load_img(local_filename, downloaded_file)
+
+    result = flow_classifier.predict(local_filename)
+    bot.send_message(message.chat.id, result)
+
+    remove_img(local_filename)
 
 
-
-def _get_commands() -> List[types.BotCommand]:
-    return [
-
-    ]
+def _get_commands():
+    return []
